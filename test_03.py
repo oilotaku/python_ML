@@ -8,13 +8,12 @@ x4 = numpy.array(smp_data.x4.iloc[0:1000])
 x5 = numpy.array(smp_data.x5.iloc[0:1000])
 y1 = numpy.array(smp_data.y1.iloc[0:1000])
 y2 = numpy.array(smp_data.y2.iloc[0:1000])
-x =[x1,x2,x3,x4,x5]
+
 w1 =1
 w2 =1
 w3 =1
 w4 =1
 w5 =1
-w = [1, 1]
 
 weights = 1
 def predict(x1, x2, x3, x4, x5, w1, w2, w3, w4, w5):
@@ -22,13 +21,6 @@ def predict(x1, x2, x3, x4, x5, w1, w2, w3, w4, w5):
 
 def error(x1, x2, x3, x4, x5, w1, w2, w3, w4, w5, y1):
     return (predict(x1, x2, x3, x4, x5, w1, w2, w3, w4, w5) - y1)**2
-
-def cost(x1, x2, x3, x4, x5, w1, w2, w3, w4, w5, Y):
-    sum = 0
-    m = len(x1)
-    for i in range(0, m):
-        sum += error(x1[i], x2[i], x3[i], x4[i], x5[i], w1, w2, w3, w4, w5, Y[i])
-    return (1 / (2*m)) * sum
 
 def rmse_w1(w, x, y):# 公式: ∇MSE(theta) = 2 / m * X.T * (X * theta - y) <- * 代表 dot
     squared_err = (w * x - y) ** 2
@@ -48,7 +40,7 @@ def gradient_w1(x1, w1, Y, alpha, step):
         loss = loss_new
         loss_new = rmse_w1 (w1, x1[i+1], y1[i+1])
         a = numpy.abs(loss_new - loss)
-        if (a < alpha):
+        if (a <= alpha):
             break
         gradient = (2/m) * alpha *errors[i]
         w1 = w1 - gradient
