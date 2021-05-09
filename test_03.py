@@ -14,7 +14,7 @@ w2 =1
 w3 =1
 w4 =1
 w5 =1
-
+w = [1, 1]
 
 weights = 1
 def predict(x1, x2, x3, x4, x5, w1, w2, w3, w4, w5):
@@ -30,27 +30,44 @@ def cost(x1, x2, x3, x4, x5, w1, w2, w3, w4, w5, Y):
         sum += error(x1[i], x2[i], x3[i], x4[i], x5[i], w1, w2, w3, w4, w5, Y[i])
     return (1 / (2*m)) * sum
 
-def rmse_w1(b,c, x, y):# 公式: ∇MSE(theta) = 2 / m * X.T * (X * theta - y) <- * 代表 dot
-    squared_err = (b + c * x - y) ** 2
+def rmse_w1(w, x, y):# 公式: ∇MSE(theta) = 2 / m * X.T * (X * theta - y) <- * 代表 dot
+    squared_err = (w * x - y) ** 2
     res = numpy.sqrt(numpy.mean(squared_err))
     return res
 
-
-def gradient_w1(x1, x2, x3, x4, x5, w1, w2, w3, w4, w5, Y, alpha, step):
+def gradient_w1(x1, w1, Y, alpha, step):
     m = len(x1)
-    points = []
+    a = 0
+    loss = rmse_w1 (w1, x1[0], y1[0])
+    loss_new = rmse_w1 (w1, x1[0], y1[0])
 
     for i in range(0, step):
         prediction = x1 * w1
-        errors = prediction - Y
+        errors =  prediction - Y
 
-        gradient = (1/m) * alpha *errors[i]
+        loss = loss_new
+        loss_new = rmse_w1 (w1, x1[i+1], y1[i+1])
+        a = numpy.abs(loss_new - loss)
+        if (a < alpha):
+            break
+        gradient = (2/m) * alpha *errors[i]
         w1 = w1 - gradient
-        points.append(cost(x1, x2, x3, x4, x5, w1, w2, w3, w4, w5, Y))
     return w1
 
 
-s = gradient_w1(x1, x2, x3, x4, x5, w1, w2, w3, w4, w5, y1, 0.04, 900)
+
+s = gradient_w1(x1,w1,y1, 0.1, 900)
+s2 = gradient_w1(x2,w2,y1, 0.1, 900)
+s3 = gradient_w1(x3,w3,y1, 0.1, 900)
+s4 = gradient_w1(x4,w4,y1, 0.1, 900)
+s5 = gradient_w1(x5,w5,y1, 0.05, 900)
+
 
 print("w1: " + str(s))
+print("w2: " + str(s2))
+print("w3: " + str(s3))
+print("w4: " + str(s4))
+print("w5: " + str(s5))
+print(predict(x1[0], x2[0], x3[0], x4[0], x5[0], s, s2, s3, s4, s5))
+print(y1[0])
 
