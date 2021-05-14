@@ -15,7 +15,6 @@ w3 =1
 w4 =1
 w5 =1
 
-weights = 1
 def predict(x1, x2, x3, x4, x5, w1, w2, w3, w4, w5):
     return w1 * x1 + w2 * x2 + w3* x3 + w4 * x4 + w5 * x5
 
@@ -32,34 +31,36 @@ def gradient_w1(x1, w1, Y, alpha, step):
     a = 0
     loss = rmse_w1 (w1, x1[0], y1[0])
     loss_new = rmse_w1 (w1, x1[0], y1[0])
-
     for i in range(0, step):
-        prediction = x1 * w1
+        prediction = w1 * x1 + w2 * x2 + w3* x3 + w4 * x4 + w5 * x5
         errors =  prediction - Y
-
         loss = loss_new
         loss_new = rmse_w1 (w1, x1[i+1], y1[i+1])
         a = numpy.abs(loss_new - loss)
         if (a <= alpha):
             break
-        gradient = (2/m) * alpha *errors[i]
+        gradient = (1/m) * alpha *errors[i]
         w1 = w1 - gradient
     return w1
-
-
 
 s = gradient_w1(x1,w1,y1, 0.1, 900)
 s2 = gradient_w1(x2,w2,y1, 0.1, 900)
 s3 = gradient_w1(x3,w3,y1, 0.1, 900)
 s4 = gradient_w1(x4,w4,y1, 0.1, 900)
-s5 = gradient_w1(x5,w5,y1, 0.05, 900)
+s5 = gradient_w1(x5,w5,y1, 0.005, 900)
 
+mse_a = 0
+for i in range(0, 900):
+    ms = predict(x1[i], x2[i], x3[i], x4[i], x5[i], s, s2, s3, s4, s5)
+    mse_a += (ms-y1[i])**2
+    mse_a = mse_a/900
 
 print("w1: " + str(s))
 print("w2: " + str(s2))
 print("w3: " + str(s3))
 print("w4: " + str(s4))
 print("w5: " + str(s5))
-print(predict(x1[0], x2[0], x3[0], x4[0], x5[0], s, s2, s3, s4, s5))
-print(y1[0])
-
+i = 50
+print("w1 * x1 + w2 * x2 + w3* x3 + w4 * x4 + w5 * x5 = " + str(predict(x1[i], x2[i], x3[i], x4[i], x5[i], s, s2, s3, s4, s5)))
+print("y = " + str(y1[i]))
+print("MSE = " + str(mse_a))
